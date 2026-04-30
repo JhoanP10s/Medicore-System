@@ -1,0 +1,66 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: medicore-system-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-medicore_system}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
+      MYSQL_USER: ${MYSQL_USER:-medicore_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-medicore_password}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - medicore-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: medicore-system-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      SERVER_PORT: ${SERVER_PORT:-8080}
+      DB_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE:-medicore_system}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      DB_USERNAME: ${MYSQL_USER:-medicore_user}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-medicore_password}
+      JWT_SECRET: ${JWT_SECRET:-change-this-secret-with-at-least-32-characters}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-86400000}
+      DDL_AUTO: ${DDL_AUTO:-update}
+    ports:
+      - "8080:8080"
+    networks:
+      - medicore-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-}
+    container_name: medicore-system-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+    networks:
+      - medicore-network
+
+volumes:
+  mysql_data:
+
+networks:
+  medicore-network:
+    driver: bridge
