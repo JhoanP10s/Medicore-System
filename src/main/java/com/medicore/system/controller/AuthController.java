@@ -31,7 +31,13 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @Operation(summary = "Registrar usuario", description = "Crea un usuario con rol ADMIN, DOCTOR o USER y retorna un token JWT.")
+    @Operation(
+            summary = "Registrar usuario",
+            description = """
+                    Crea un usuario con rol ADMIN, DOCTOR o USER y retorna un token JWT.
+                    En este proyecto academico el registro permite seleccionar rol para facilitar pruebas;
+                    en produccion un registro publico no deberia permitir crear usuarios ADMIN.
+                    """)
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             required = true,
             content = @Content(schema = @Schema(implementation = RegisterRequest.class),
@@ -40,7 +46,11 @@ public class AuthController {
                             """)))
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Usuario registrado y autenticado",
-                    content = @Content(schema = @Schema(implementation = AuthResponse.class))),
+                    content = @Content(
+                            schema = @Schema(implementation = AuthResponse.class),
+                            examples = @ExampleObject(value = """
+                                    {"id":1,"nombre":"Admin Clinica","email":"admin@medicore.com","rol":"ADMIN","token":"jwt-token","tokenType":"Bearer"}
+                                    """))),
             @ApiResponse(responseCode = "400", description = "Datos invalidos",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "409", description = "Email duplicado",
@@ -60,7 +70,11 @@ public class AuthController {
                             """)))
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Login correcto",
-                    content = @Content(schema = @Schema(implementation = AuthResponse.class))),
+                    content = @Content(
+                            schema = @Schema(implementation = AuthResponse.class),
+                            examples = @ExampleObject(value = """
+                                    {"id":1,"nombre":"Admin Clinica","email":"admin@medicore.com","rol":"ADMIN","token":"jwt-token","tokenType":"Bearer"}
+                                    """))),
             @ApiResponse(responseCode = "400", description = "Datos invalidos",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "401", description = "Credenciales invalidas",

@@ -11,15 +11,23 @@ export const http = axios.create({
 
 http.interceptors.request.use((config) => {
   const auth = getAuth();
-  if (auth?.token) {
+  const url = config.url ?? '';
+
+  if (auth?.token && !url.startsWith('/auth/')) {
     config.headers.Authorization = `${auth.tokenType ?? 'Bearer'} ${auth.token}`;
   }
+
   return config;
 });
 
 export function getErrorMessage(error: unknown) {
   if (error instanceof AxiosError) {
     const data = error.response?.data as ErrorResponse | undefined;
+
+    if (error.response?.status === 401) {
+      return data?.message ?? 'Credenciales incorrectas o usuario no registrado.';
+    }
+
     return data?.message ?? error.message;
   }
 

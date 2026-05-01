@@ -14,6 +14,12 @@ npm install
 npm run dev
 ```
 
+Build de produccion:
+
+```bash
+npm run build
+```
+
 Vite expone la aplicacion en `http://localhost:5173` y proxifica las rutas de la API hacia el backend.
 
 Si el backend usa otra URL, define:

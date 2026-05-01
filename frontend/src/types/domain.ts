@@ -1,10 +1,12 @@
 export type Role = 'ADMIN' | 'DOCTOR' | 'USER';
 
 export interface AuthResponse {
-  token: string;
-  tokenType: string;
+  id: number;
+  nombre: string;
   email: string;
   rol: Role;
+  token: string;
+  tokenType: string;
 }
 
 export interface ErrorResponse {
@@ -59,6 +61,13 @@ export interface Cita {
 export interface LoginRequest {
   email: string;
   password: string;
+}
+
+export interface RegisterRequest {
+  nombre: string;
+  email: string;
+  password: string;
+  rol: Role;
 }
 
 export type PacienteRequest = Paciente;

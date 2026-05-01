@@ -38,34 +38,51 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public AuthResponse register(RegisterRequest request) {
-        if (usuarioRepository.existsByEmail(request.getEmail())) {
+        String email = normalizeEmail(request.getEmail());
+
+        if (usuarioRepository.existsByEmail(email)) {
             throw new BusinessException("Ya existe un usuario registrado con este email.");
         }
 
         Usuario usuario = new Usuario();
-        usuario.setNombre(request.getNombre());
-        usuario.setEmail(request.getEmail());
+        usuario.setNombre(request.getNombre().trim());
+        usuario.setEmail(email);
         usuario.setPassword(passwordEncoder.encode(request.getPassword()));
         usuario.setRol(request.getRol());
         usuario.setActivo(true);
         usuarioRepository.save(usuario);
 
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+                new UsernamePasswordAuthenticationToken(email, request.getPassword()));
         String token = jwtService.generateToken(authentication);
 
-        return new AuthResponse(token, usuario.getEmail(), usuario.getRol().name());
+        return toAuthResponse(usuario, token);
     }
 
     @Override
     public AuthResponse login(LoginRequest request) {
+        String email = normalizeEmail(request.getEmail());
+
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+                new UsernamePasswordAuthenticationToken(email, request.getPassword()));
         String token = jwtService.generateToken(authentication);
 
-        Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
+        Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessException("Credenciales invalidas."));
 
-        return new AuthResponse(token, usuario.getEmail(), usuario.getRol().name());
+        return toAuthResponse(usuario, token);
+    }
+
+    private AuthResponse toAuthResponse(Usuario usuario, String token) {
+        return new AuthResponse(
+                usuario.getId(),
+                usuario.getNombre(),
+                usuario.getEmail(),
+                usuario.getRol().name(),
+                token);
+    }
+
+    private String normalizeEmail(String email) {
+        return email == null ? null : email.trim().toLowerCase();
     }
 }

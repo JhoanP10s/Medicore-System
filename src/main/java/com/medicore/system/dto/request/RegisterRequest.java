@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class RegisterRequest {
@@ -22,9 +23,12 @@ public class RegisterRequest {
     @Schema(description = "Contrasena del usuario", example = "Admin12345")
     @NotBlank(message = "La contrasena es obligatoria")
     @Size(min = 8, max = 80, message = "La contrasena debe tener entre 8 y 80 caracteres")
+    @Pattern(
+            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$",
+            message = "La contrasena debe tener al menos una mayuscula, una minuscula y un numero")
     private String password;
 
-    @Schema(description = "Rol del usuario", example = "ADMIN")
+    @Schema(description = "Rol del usuario. En produccion no debe permitirse crear ADMIN desde registro publico.", example = "ADMIN")
     @NotNull(message = "El rol es obligatorio")
     private Rol rol;
 
