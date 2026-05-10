@@ -23,17 +23,25 @@ public class CitaMapper {
         response.setFechaHora(cita.getFechaHora());
         response.setMotivo(cita.getMotivo());
         response.setObservaciones(cita.getObservaciones());
+        response.setEstado(cita.getEstado());
+        response.setDuracionMinutos(cita.getDuracionMinutos());
         response.setPacienteNumeroDocumento(cita.getPaciente().getNumeroDocumento());
         response.setPacienteNombreCompleto(nombreCompleto(
                 cita.getPaciente().getPrimerNombre(),
                 cita.getPaciente().getPrimerApellido()));
+        response.setPacienteActivo(cita.getPaciente().getActivo());
         response.setMedicoNumeroDocumento(cita.getMedico().getNumeroDocumento());
         response.setMedicoNombreCompleto(nombreCompleto(
                 cita.getMedico().getPrimerNombre(),
                 cita.getMedico().getPrimerApellido()));
+        response.setMedicoActivo(cita.getMedico().getActivo());
 
         if (cita.getMedico().getEspecialidad() != null) {
             response.setEspecialidadNombre(cita.getMedico().getEspecialidad().getNombre());
+        }
+
+        if (cita.getHistoriaClinica() != null) {
+            response.setHistoriaClinicaId(cita.getHistoriaClinica().getId());
         }
 
         return response;
@@ -43,6 +51,7 @@ public class CitaMapper {
         cita.setFechaHora(request.getFechaHora());
         cita.setMotivo(request.getMotivo());
         cita.setObservaciones(request.getObservaciones());
+        cita.setDuracionMinutos(request.getDuracionMinutos());
         cita.setPaciente(paciente);
         cita.setMedico(medico);
     }

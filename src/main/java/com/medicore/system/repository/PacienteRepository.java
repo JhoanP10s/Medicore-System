@@ -9,4 +9,6 @@ public interface PacienteRepository extends JpaRepository<Paciente, String> {
     Paciente findByNumeroDocumento(String numeroDocumento);
 
     Paciente findByNumeroDocumentoAndTipoDocumento(String numeroDocumento, String tipoDocumento);
+
+    long countByActivoTrue();
 }

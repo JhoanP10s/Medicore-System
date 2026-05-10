@@ -15,6 +15,7 @@ interface FormState {
   password: string;
   confirmPassword: string;
   rol: Role;
+  numeroDocumentoMedico: string;
 }
 
 export function RegisterPage() {
@@ -24,7 +25,8 @@ export function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    rol: 'USER'
+    rol: 'USER',
+    numeroDocumentoMedico: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,7 +56,8 @@ export function RegisterPage() {
         nombre: form.nombre.trim(),
         email: form.email.trim().toLowerCase(),
         password: form.password,
-        rol: form.rol
+        rol: form.rol,
+        numeroDocumentoMedico: form.rol === 'DOCTOR' ? form.numeroDocumentoMedico.trim() : undefined
       });
 
       setSuccess('Usuario registrado correctamente. Ahora puedes iniciar sesion.');
@@ -136,6 +139,16 @@ export function RegisterPage() {
             </select>
             <span className="field-hint">Selector habilitado solo para entorno academico/desarrollo.</span>
           </label>
+          {form.rol === 'DOCTOR' && (
+            <label>
+              Documento del medico asociado
+              <input
+                value={form.numeroDocumentoMedico}
+                onChange={(event) => updateField('numeroDocumentoMedico', event.target.value)}
+                required
+              />
+            </label>
+          )}
           {validationError ? <span className="field-error">{validationError}</span> : null}
           <button className="primary-button" type="submit" disabled={loading}>
             {loading ? 'Registrando...' : 'Crear cuenta'}
@@ -159,5 +172,8 @@ function validate(form: FormState) {
   }
   if (form.password !== form.confirmPassword) return 'Las contrasenas no coinciden.';
   if (!form.rol) return 'El rol es obligatorio.';
+  if (form.rol === 'DOCTOR' && !form.numeroDocumentoMedico.trim()) {
+    return 'El documento del medico asociado es obligatorio para usuarios DOCTOR.';
+  }
   return null;
 }

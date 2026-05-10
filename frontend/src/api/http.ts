@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios';
-import { getAuth } from '../utils/storage';
+import { clearAuth, getAuth } from '../utils/storage';
 import type { ErrorResponse } from '../types/domain';
 
 export const http = axios.create({
@@ -25,7 +25,16 @@ export function getErrorMessage(error: unknown) {
     const data = error.response?.data as ErrorResponse | undefined;
 
     if (error.response?.status === 401) {
-      return data?.message ?? 'Credenciales incorrectas o usuario no registrado.';
+      clearAuth();
+      window.dispatchEvent(new Event('auth:changed'));
+      if (!window.location.pathname.startsWith('/login')) {
+        window.location.assign('/login');
+      }
+      return data?.message ?? 'Sesion expirada o credenciales incorrectas.';
+    }
+
+    if (error.response?.status === 403) {
+      return data?.message ?? 'No tienes permisos para realizar esta accion.';
     }
 
     return data?.message ?? error.message;

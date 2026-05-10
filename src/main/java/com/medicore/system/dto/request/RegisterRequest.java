@@ -32,6 +32,9 @@ public class RegisterRequest {
     @NotNull(message = "El rol es obligatorio")
     private Rol rol;
 
+    @Schema(description = "Numero de documento del medico asociado cuando el rol es DOCTOR", example = "79998887")
+    private String numeroDocumentoMedico;
+
     public String getNombre() {
         return nombre;
     }
@@ -62,5 +65,13 @@ public class RegisterRequest {
 
     public void setRol(Rol rol) {
         this.rol = rol;
+    }
+
+    public String getNumeroDocumentoMedico() {
+        return numeroDocumentoMedico;
+    }
+
+    public void setNumeroDocumentoMedico(String numeroDocumentoMedico) {
+        this.numeroDocumentoMedico = numeroDocumentoMedico;
     }
 }

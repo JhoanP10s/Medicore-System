@@ -85,7 +85,7 @@ class CitaControllerTest {
         mockMvc.perform(post("/cita")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
-                        {"numeroDocumentoPaciente":"1020304050","numeroDocumentoMedico":"79998887","fechaHora":"2030-05-15T09:30:00","motivo":"Control general"}
+                        {"numeroDocumentoPaciente":"1020304050","numeroDocumentoMedico":"79998887","fechaHora":"2030-05-15T09:30:00","motivo":"Control general","duracionMinutos":30}
                         """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
@@ -112,7 +112,7 @@ class CitaControllerTest {
         mockMvc.perform(post("/cita")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
-                        {"numeroDocumentoPaciente":"1020304050","numeroDocumentoMedico":"79998887","fechaHora":"2030-05-15T09:30:00","motivo":"Control general"}
+                        {"numeroDocumentoPaciente":"1020304050","numeroDocumentoMedico":"79998887","fechaHora":"2030-05-15T09:30:00","motivo":"Control general","duracionMinutos":30}
                         """))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.status").value(409))

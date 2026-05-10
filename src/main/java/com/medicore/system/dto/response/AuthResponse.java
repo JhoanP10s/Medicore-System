@@ -6,19 +6,25 @@ public class AuthResponse {
     private String nombre;
     private String email;
     private String rol;
+    private String medicoId;
     private String token;
     private String tokenType = "Bearer";
 
     public AuthResponse(Long id, String nombre, String email, String rol, String token) {
+        this(id, nombre, email, rol, null, token);
+    }
+
+    public AuthResponse(Long id, String nombre, String email, String rol, String medicoId, String token) {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
         this.rol = rol;
+        this.medicoId = medicoId;
         this.token = token;
     }
 
     public AuthResponse(String token, String email, String rol) {
-        this(null, null, email, rol, token);
+        this(null, null, email, rol, null, token);
     }
 
     public Long getId() {
@@ -51,6 +57,14 @@ public class AuthResponse {
 
     public void setRol(String rol) {
         this.rol = rol;
+    }
+
+    public String getMedicoId() {
+        return medicoId;
+    }
+
+    public void setMedicoId(String medicoId) {
+        this.medicoId = medicoId;
     }
 
     public String getToken() {

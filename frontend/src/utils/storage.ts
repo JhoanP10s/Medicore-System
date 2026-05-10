@@ -1,4 +1,4 @@
-import type { AuthResponse } from '../types/domain';
+import type { AuthResponse, Role } from '../types/domain';
 
 const AUTH_KEY = 'medicore_system_auth';
 
@@ -20,4 +20,28 @@ export function getAuth(): AuthResponse | null {
 
 export function clearAuth() {
   localStorage.removeItem(AUTH_KEY);
+}
+
+export function getToken() {
+  return getAuth()?.token ?? null;
+}
+
+export function getRole(): Role | null {
+  return getAuth()?.rol ?? null;
+}
+
+export function getMedicoId() {
+  return getAuth()?.medicoId ?? null;
+}
+
+export function isAdmin() {
+  return getRole() === 'ADMIN';
+}
+
+export function isDoctor() {
+  return getRole() === 'DOCTOR';
+}
+
+export function isUser() {
+  return getRole() === 'USER';
 }

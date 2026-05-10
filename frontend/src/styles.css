@@ -496,6 +496,44 @@ textarea:focus {
   font-weight: 700;
 }
 
+.detail-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.clinical-record-grid {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.clinical-record-panel,
+.clinical-block {
+  background: #ffffff;
+  border: 1px solid #dbe5e8;
+  border-radius: 8px;
+}
+
+.clinical-record-panel {
+  padding: 22px;
+}
+
+.clinical-block {
+  padding: 18px;
+}
+
+.clinical-block h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.clinical-block p {
+  margin: 0;
+  color: #35484f;
+  line-height: 1.6;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -584,4 +622,82 @@ textarea:focus {
   color: #98251f;
   font-size: 13px;
   font-weight: 800;
+}
+
+
+.badge-info {
+  background: #e6f0ff;
+  color: #1d4f91;
+}
+
+.slot-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px;
+  padding: 14px;
+  margin-top: 16px;
+}
+
+.slot-item,
+.slot-button {
+  min-height: 54px;
+  border: 1px solid #dbe5e8;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #17353c;
+  display: grid;
+  align-content: center;
+  gap: 4px;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.slot-button:hover {
+  border-color: #12805f;
+  background: #eef9f5;
+}
+
+.slot-item span {
+  color: #63747b;
+  font-size: 13px;
+}
+
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.dashboard-panel {
+  min-height: 220px;
+}
+
+.dashboard-list {
+  display: grid;
+  gap: 10px;
+  padding: 16px 20px 20px;
+}
+
+.dashboard-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px;
+  background: #f7fafb;
+  border-radius: 8px;
+}
+
+.dashboard-row span,
+.dashboard-row time {
+  display: block;
+  color: #65767d;
+  font-size: 14px;
+}
+
+@media (max-width: 980px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
 }

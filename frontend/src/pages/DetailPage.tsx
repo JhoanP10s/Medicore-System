@@ -1,4 +1,4 @@
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, FilePlus2, FileText } from 'lucide-react';
 import { useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { citasApi, medicosApi, pacientesApi } from '../api/clinicApi';
@@ -7,6 +7,7 @@ import { LoadingState } from '../components/LoadingState';
 import { PageHeader } from '../components/PageHeader';
 import { StatusBadge } from '../components/StatusBadge';
 import { useAsync } from '../hooks/useAsync';
+import { useAuth } from '../hooks/useAuth';
 import type { Cita, Medico, Paciente } from '../types/domain';
 import { formatDateTime, fullName } from '../utils/format';
 
@@ -25,6 +26,8 @@ export function DetailPage() {
   }, [detailType, id]);
 
   const { data, loading, error } = useAsync(loader);
+  const { isAdmin, isDoctor } = useAuth();
+  const canManageHistoria = isAdmin() || isDoctor();
 
   return (
     <>
@@ -37,7 +40,7 @@ export function DetailPage() {
       {loading && <LoadingState />}
       {data?.type === 'paciente' && <PersonDetail person={data.item as Paciente} />}
       {data?.type === 'medico' && <DoctorDetail medico={data.item as Medico} />}
-      {data?.type === 'cita' && <AppointmentDetail cita={data.item as Cita} />}
+      {data?.type === 'cita' && <AppointmentDetail cita={data.item as Cita} canManageHistoria={canManageHistoria} />}
     </>
   );
 }
@@ -72,17 +75,34 @@ function DoctorDetail({ medico }: { medico: Medico }) {
   );
 }
 
-function AppointmentDetail({ cita }: { cita: Cita }) {
+function AppointmentDetail({ cita, canManageHistoria }: { cita: Cita; canManageHistoria: boolean }) {
   return (
     <section className="detail-panel">
       <h2>{cita.motivo}</h2>
       <DetailGrid items={[
         ['Fecha y hora', formatDateTime(cita.fechaHora)],
+        ['Estado', cita.estado],
+        ['Duracion', `${cita.duracionMinutos} minutos`],
         ['Paciente', `${cita.pacienteNombreCompleto} (${cita.pacienteNumeroDocumento})`],
         ['Medico', `${cita.medicoNombreCompleto} (${cita.medicoNumeroDocumento})`],
         ['Especialidad', cita.especialidadNombre || 'Sin especialidad'],
+        ['Historia clinica', cita.historiaClinicaId ? `#${cita.historiaClinicaId}` : 'Sin historia clinica'],
         ['Observaciones', cita.observaciones || 'Sin observaciones']
       ]} />
+      {canManageHistoria && cita.historiaClinicaId && (
+        <div className="detail-actions">
+          <Link className="secondary-button" to={`/historias-clinicas/${cita.historiaClinicaId}`}>
+            <FileText size={18} /> Ver historia clinica
+          </Link>
+        </div>
+      )}
+      {canManageHistoria && cita.estado === 'COMPLETADA' && !cita.historiaClinicaId && (
+        <div className="detail-actions">
+          <Link className="secondary-button" to={`/citas/${cita.id}/historia-clinica/nueva`}>
+            <FilePlus2 size={18} /> Crear historia clinica
+          </Link>
+        </div>
+      )}
     </section>
   );
 }

@@ -1,18 +1,24 @@
-import { CalendarDays, LogOut, Stethoscope, Users, Activity, LayoutDashboard, BadgePlus } from 'lucide-react';
+import { CalendarDays, LogOut, Stethoscope, Users, Activity, LayoutDashboard, BadgePlus, Clock, FileText, CalendarCheck, CalendarX } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import type { Role } from '../types/domain';
 
-const navItems = [
-  { to: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/pacientes', label: 'Pacientes', icon: Users },
-  { to: '/medicos', label: 'Medicos', icon: Stethoscope },
-  { to: '/citas', label: 'Citas', icon: CalendarDays },
-  { to: '/especialidades', label: 'Especialidades', icon: BadgePlus }
+const navItems: Array<{ to: string; label: string; doctorLabel?: string; icon: typeof LayoutDashboard; roles: Role[] }> = [
+  { to: '/', label: 'Dashboard', icon: LayoutDashboard, roles: ['ADMIN', 'DOCTOR', 'USER'] },
+  { to: '/pacientes', label: 'Pacientes', icon: Users, roles: ['ADMIN', 'USER'] },
+  { to: '/medicos', label: 'Medicos', icon: Stethoscope, roles: ['ADMIN'] },
+  { to: '/citas', label: 'Citas', icon: CalendarDays, roles: ['ADMIN', 'DOCTOR'] },
+  { to: '/agenda', label: 'Agenda', icon: Clock, roles: ['ADMIN', 'DOCTOR'] },
+  { to: '/disponibilidad-medica', label: 'Disponibilidad Medica', doctorLabel: 'Mi Disponibilidad', icon: CalendarCheck, roles: ['ADMIN', 'DOCTOR'] },
+  { to: '/bloqueo-agenda', label: 'Bloqueos de Agenda', doctorLabel: 'Mis Bloqueos', icon: CalendarX, roles: ['ADMIN', 'DOCTOR'] },
+  { to: '/historias-clinicas', label: 'Historias Clinicas', icon: FileText, roles: ['ADMIN', 'DOCTOR'] },
+  { to: '/especialidades', label: 'Especialidades', icon: BadgePlus, roles: ['ADMIN'] }
 ];
 
 export function AppLayout() {
   const { auth, logout } = useAuth();
   const navigate = useNavigate();
+  const visibleItems = navItems.filter((item) => auth?.rol && item.roles.includes(auth.rol));
 
   const handleLogout = () => {
     logout();
@@ -30,12 +36,12 @@ export function AppLayout() {
           </div>
         </div>
         <nav>
-          {navItems.map((item) => {
+          {visibleItems.map((item) => {
             const Icon = item.icon;
             return (
               <NavLink key={item.to} to={item.to} end={item.to === '/'}>
                 <Icon size={18} />
-                <span>{item.label}</span>
+                <span>{auth?.rol === 'DOCTOR' && item.doctorLabel ? item.doctorLabel : item.label}</span>
               </NavLink>
             );
           })}

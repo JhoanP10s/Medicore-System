@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -33,6 +35,12 @@ public class CitaRequest {
     @Schema(description = "Observaciones adicionales de la cita", example = "Paciente refiere dolor toracico ocasional")
     @Size(max = 500, message = "Las observaciones no pueden superar 500 caracteres")
     private String observaciones;
+
+    @Schema(description = "Duracion estimada de la cita en minutos", example = "30")
+    @NotNull(message = "La duracion de la cita es obligatoria")
+    @Min(value = 15, message = "La duracion minima de la cita es 15 minutos")
+    @Max(value = 240, message = "La duracion maxima de la cita es 240 minutos")
+    private Integer duracionMinutos;
 
     public String getNumeroDocumentoPaciente() {
         return numeroDocumentoPaciente;
@@ -72,5 +80,13 @@ public class CitaRequest {
 
     public void setObservaciones(String observaciones) {
         this.observaciones = observaciones;
+    }
+
+    public Integer getDuracionMinutos() {
+        return duracionMinutos;
+    }
+
+    public void setDuracionMinutos(Integer duracionMinutos) {
+        this.duracionMinutos = duracionMinutos;
     }
 }

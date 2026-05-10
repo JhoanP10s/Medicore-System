@@ -7,4 +7,6 @@ import com.medicore.system.model.entity.Especialidad;
 public interface EspecialidadRepository extends JpaRepository<Especialidad, Long> {
 
     boolean existsByNombre(String nombre);
+
+    long countByActivoTrue();
 }

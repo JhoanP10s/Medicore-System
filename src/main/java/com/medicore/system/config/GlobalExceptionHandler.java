@@ -7,6 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -42,6 +43,13 @@ public class GlobalExceptionHandler {
             BusinessException exception,
             HttpServletRequest request) {
         return buildErrorResponse(HttpStatus.CONFLICT, exception.getMessage(), request);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(
+            AccessDeniedException exception,
+            HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.FORBIDDEN, exception.getMessage(), request);
     }
 
     @ExceptionHandler({ BadCredentialsException.class, UsernameNotFoundException.class })

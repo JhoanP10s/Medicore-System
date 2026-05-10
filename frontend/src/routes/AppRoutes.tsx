@@ -12,6 +12,15 @@ import { CitaListPage } from '../pages/CitaListPage';
 import { CitaFormPage } from '../pages/CitaFormPage';
 import { DetailPage } from '../pages/DetailPage';
 import { EspecialidadListPage } from '../pages/EspecialidadListPage';
+import { AgendaPage } from '../pages/AgendaPage';
+import { AccessDeniedPage } from '../pages/AccessDeniedPage';
+import { HistoriaClinicaListPage } from '../pages/HistoriaClinicaListPage';
+import { HistoriaClinicaDetailPage } from '../pages/HistoriaClinicaDetailPage';
+import { HistoriaClinicaFormPage } from '../pages/HistoriaClinicaFormPage';
+import { DisponibilidadMedicaListPage } from '../pages/DisponibilidadMedicaListPage';
+import { DisponibilidadMedicaFormPage } from '../pages/DisponibilidadMedicaFormPage';
+import { BloqueoAgendaListPage } from '../pages/BloqueoAgendaListPage';
+import { BloqueoAgendaFormPage } from '../pages/BloqueoAgendaFormPage';
 
 export function AppRoutes() {
   return (
@@ -21,16 +30,39 @@ export function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route index element={<DashboardPage />} />
-          <Route path="pacientes" element={<PacienteListPage />} />
-          <Route path="pacientes/nuevo" element={<PacienteFormPage />} />
-          <Route path="pacientes/:documento/editar" element={<PacienteFormPage />} />
-          <Route path="medicos" element={<MedicoListPage />} />
-          <Route path="medicos/nuevo" element={<MedicoFormPage />} />
-          <Route path="medicos/:documento/editar" element={<MedicoFormPage />} />
-          <Route path="citas" element={<CitaListPage />} />
-          <Route path="citas/nueva" element={<CitaFormPage />} />
-          <Route path="citas/:id/editar" element={<CitaFormPage />} />
-          <Route path="especialidades" element={<EspecialidadListPage />} />
+          <Route path="acceso-denegado" element={<AccessDeniedPage />} />
+
+          <Route element={<ProtectedRoute allowedRoles={['ADMIN', 'USER']} />}>
+            <Route path="pacientes" element={<PacienteListPage />} />
+            <Route path="pacientes/nuevo" element={<PacienteFormPage />} />
+            <Route path="pacientes/:documento/editar" element={<PacienteFormPage />} />
+          </Route>
+
+          <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
+            <Route path="medicos" element={<MedicoListPage />} />
+            <Route path="medicos/nuevo" element={<MedicoFormPage />} />
+            <Route path="medicos/:documento/editar" element={<MedicoFormPage />} />
+            <Route path="especialidades" element={<EspecialidadListPage />} />
+            <Route path="disponibilidad-medica/nueva" element={<DisponibilidadMedicaFormPage />} />
+            <Route path="disponibilidad-medica/:id/editar" element={<DisponibilidadMedicaFormPage />} />
+            <Route path="bloqueo-agenda/nuevo" element={<BloqueoAgendaFormPage />} />
+            <Route path="bloqueo-agenda/:id/editar" element={<BloqueoAgendaFormPage />} />
+          </Route>
+
+          <Route element={<ProtectedRoute allowedRoles={['ADMIN', 'DOCTOR']} />}>
+            <Route path="citas" element={<CitaListPage />} />
+            <Route path="citas/nueva" element={<CitaFormPage />} />
+            <Route path="citas/:id/editar" element={<CitaFormPage />} />
+            <Route path="citas/:citaId/historia-clinica/nueva" element={<HistoriaClinicaFormPage />} />
+            <Route path="agenda" element={<AgendaPage />} />
+            <Route path="disponibilidad-medica" element={<DisponibilidadMedicaListPage />} />
+            <Route path="bloqueo-agenda" element={<BloqueoAgendaListPage />} />
+            <Route path="historias-clinicas" element={<HistoriaClinicaListPage />} />
+            <Route path="historias-clinicas/nueva" element={<HistoriaClinicaFormPage />} />
+            <Route path="historias-clinicas/:id" element={<HistoriaClinicaDetailPage />} />
+            <Route path="historias-clinicas/:id/editar" element={<HistoriaClinicaFormPage />} />
+          </Route>
+
           <Route path="detalle/:tipo/:id" element={<DetailPage />} />
         </Route>
       </Route>
