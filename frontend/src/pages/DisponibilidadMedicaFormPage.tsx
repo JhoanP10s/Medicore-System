@@ -35,8 +35,9 @@ export function DisponibilidadMedicaFormPage() {
   }, [id, isEditing]);
 
   const { data, loading, error: loadError } = useAsync(loader);
-  const medicosActivos = data?.medicos.filter((medico) => medico.activo !== false) ?? [];
-  const medicoSeleccionado = data?.medicos.find((medico) => medico.numeroDocumento === form.numeroDocumentoMedico);
+  const medicos = Array.isArray(data?.medicos) ? data.medicos : [];
+  const medicosActivos = medicos.filter((medico) => medico.activo !== false);
+  const medicoSeleccionado = medicos.find((medico) => medico.numeroDocumento === form.numeroDocumentoMedico);
   const medicoSeleccionadoInactivo = Boolean(medicoSeleccionado && medicoSeleccionado.activo === false);
 
   useEffect(() => {
@@ -148,6 +149,7 @@ function toBackendTime(value: string) {
   return value.length === 5 ? `${value}:00` : value;
 }
 
-function formatDia(value: string) {
+function formatDia(value?: string | null) {
+  if (!value) return 'Sin dia';
   return value.charAt(0) + value.slice(1).toLowerCase();
 }

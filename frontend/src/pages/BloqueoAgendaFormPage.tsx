@@ -33,8 +33,9 @@ export function BloqueoAgendaFormPage() {
   }, [id, isEditing]);
 
   const { data, loading, error: loadError } = useAsync(loader);
-  const medicosActivos = data?.medicos.filter((medico) => medico.activo !== false) ?? [];
-  const medicoSeleccionado = data?.medicos.find((medico) => medico.numeroDocumento === form.numeroDocumentoMedico);
+  const medicos = Array.isArray(data?.medicos) ? data.medicos : [];
+  const medicosActivos = medicos.filter((medico) => medico.activo !== false);
+  const medicoSeleccionado = medicos.find((medico) => medico.numeroDocumento === form.numeroDocumentoMedico);
   const medicoSeleccionadoInactivo = Boolean(medicoSeleccionado && medicoSeleccionado.activo === false);
 
   useEffect(() => {

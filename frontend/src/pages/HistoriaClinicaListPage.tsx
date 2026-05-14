@@ -27,6 +27,8 @@ export function HistoriaClinicaListPage() {
   const { data, loading, error } = useAsync(loader);
   const doctorWithoutMedico = isDoctor() && !getMedicoId();
 
+  const rows = Array.isArray(data) ? data : [];
+
   const columns: Column<HistoriaClinicaResponse>[] = [
     { header: 'Paciente', render: (historia) => <strong>{historia.pacienteNombreCompleto}</strong> },
     { header: 'Medico', render: (historia) => historia.medicoNombreCompleto },
@@ -55,8 +57,8 @@ export function HistoriaClinicaListPage() {
       />
       <Alert type="error" message={error} />
       {loading && <LoadingState />}
-      {data?.length ? (
-        <DataTable columns={columns} data={data} keyExtractor={(historia) => historia.id} />
+      {rows.length ? (
+        <DataTable columns={columns} data={rows} keyExtractor={(historia) => historia.id} />
       ) : !loading && (
         <EmptyState title="Sin historias clinicas" description="Aun no hay historias clinicas registradas." />
       )}
@@ -64,6 +66,7 @@ export function HistoriaClinicaListPage() {
   );
 }
 
-function resumen(texto: string) {
-  return texto.length > 80 ? `${texto.slice(0, 80)}...` : texto;
+function resumen(texto?: string | null) {
+  if (!texto) return 'Sin diagnostico';
+  return texto.length > 80 ? texto.slice(0, 80) + '...' : texto;
 }

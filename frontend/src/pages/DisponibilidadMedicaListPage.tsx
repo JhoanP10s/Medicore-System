@@ -28,6 +28,7 @@ export function DisponibilidadMedicaListPage() {
   }, [getMedicoId, isDoctor]);
 
   const { data, loading, error, execute } = useAsync(loader);
+  const rows = Array.isArray(data) ? data : [];
 
   const desactivar = async (id: number) => {
     if (!confirm('Confirmar desactivacion de la disponibilidad medica.')) return;
@@ -71,8 +72,8 @@ export function DisponibilidadMedicaListPage() {
       <Alert type="success" message={message} />
       <Alert type="error" message={actionError ?? error} />
       {loading && <LoadingState />}
-      {data?.length ? (
-        <DataTable columns={columns} data={data} keyExtractor={(item) => item.id} />
+      {rows.length ? (
+        <DataTable columns={columns} data={rows} keyExtractor={(item) => item.id} />
       ) : !loading && !error && (
         <EmptyState title="Sin disponibilidad" description="No hay bloques de disponibilidad registrados." />
       )}
@@ -84,6 +85,7 @@ function formatHora(value: string) {
   return value?.slice(0, 5) || 'Sin hora';
 }
 
-function formatDia(value: string) {
+function formatDia(value?: string | null) {
+  if (!value) return 'Sin dia';
   return value.charAt(0) + value.slice(1).toLowerCase();
 }

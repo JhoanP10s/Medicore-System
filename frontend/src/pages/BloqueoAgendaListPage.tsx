@@ -29,6 +29,7 @@ export function BloqueoAgendaListPage() {
   }, [getMedicoId, isDoctor]);
 
   const { data, loading, error, execute } = useAsync(loader);
+  const rows = Array.isArray(data) ? data : [];
 
   const desactivar = async (id: number) => {
     if (!confirm('Confirmar desactivacion del bloqueo de agenda.')) return;
@@ -71,8 +72,8 @@ export function BloqueoAgendaListPage() {
       <Alert type="success" message={message} />
       <Alert type="error" message={actionError ?? error} />
       {loading && <LoadingState />}
-      {data?.length ? (
-        <DataTable columns={columns} data={data} keyExtractor={(item) => item.id} />
+      {rows.length ? (
+        <DataTable columns={columns} data={rows} keyExtractor={(item) => item.id} />
       ) : !loading && !error && (
         <EmptyState title="Sin bloqueos" description="No hay bloqueos de agenda registrados." />
       )}
